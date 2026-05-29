@@ -1,0 +1,1528 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenClaw 新手完全教程</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0c0b09;--bg2:#131210;--bg3:#1a1815;--bg4:#222018;
+  --ink:#ede5d8;--ink2:#a89880;--ink3:#6a5e50;
+  --line:#272420;--line2:#332e28;
+  --accent:#f0920a;--acc2:#ffc45e;
+  --red:#f05040;--rdb:#1e1008;--rdl:#4a2010;
+  --grn:#40c880;--gnb:#081a10;--gnl:#154030;
+  --blu:#50a8f0;--blb:#080e1a;--bll:#103050;
+  --ylw:#e8c840;--ylb:#181400;--yll:#403800;
+  --th:52px;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink);font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.75;min-height:100vh}
+
+/* TOP BAR */
+.tb{position:fixed;top:0;left:0;right:0;height:var(--th);background:rgba(12,11,9,.97);backdrop-filter:blur(18px);border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 20px;z-index:300;gap:12px}
+.tb-logo{font-family:"IBM Plex Mono",monospace;font-weight:700;font-size:15px;color:var(--accent);letter-spacing:1px;display:flex;align-items:center;gap:8px;text-decoration:none;flex-shrink:0}
+.tb-v{font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--ink3);background:var(--bg3);border:1px solid var(--line2);padding:2px 8px;border-radius:4px;flex-shrink:0}
+.tb-sp{flex:1}
+.tb-doc{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink3);text-decoration:none;padding:4px 10px;border:1px solid var(--line2);border-radius:5px;transition:all .15s;flex-shrink:0}
+.tb-doc:hover{color:var(--acc2);border-color:var(--accent)}
+
+/* TAB NAV */
+.tab-nav{position:fixed;top:var(--th);left:0;right:0;background:rgba(12,11,9,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);z-index:200;display:flex;overflow-x:auto;scrollbar-width:none;padding:0 12px}
+.tab-nav::-webkit-scrollbar{display:none}
+.tab-btn{font-family:"Noto Sans SC",sans-serif;font-size:13px;font-weight:600;color:var(--ink3);border:none;background:none;cursor:pointer;padding:12px 14px;white-space:nowrap;border-bottom:2px solid transparent;transition:all .15s;display:flex;align-items:center;gap:6px;flex-shrink:0}
+.tab-btn:hover{color:var(--ink2)}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tab-btn .tn{font-family:"IBM Plex Mono",monospace;font-size:9px;opacity:.6;font-weight:400}
+
+/* CONTENT */
+.content{margin-top:calc(var(--th) + 42px);padding:40px 20px 100px;max-width:860px;margin-left:auto;margin-right:auto}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+/* TYPOGRAPHY */
+.ey{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:3px;color:var(--accent);font-weight:600;text-transform:uppercase;margin-bottom:6px;display:block}
+h2{font-size:26px;font-weight:900;letter-spacing:-.5px;margin-bottom:10px;line-height:1.2}
+h3{font-size:18px;font-weight:800;margin:28px 0 10px;color:var(--ink)}
+h4{font-size:15px;font-weight:700;margin:20px 0 8px;color:var(--acc2)}
+.lead{color:var(--ink2);font-size:15px;margin-bottom:24px;line-height:1.7;max-width:64ch}
+p{color:var(--ink2);font-size:14.5px;line-height:1.75;margin-bottom:12px}
+p strong,li strong{color:var(--ink);font-weight:700}
+.sec-divider{border:none;border-top:1px solid var(--line);margin:36px 0}
+
+/* NOTES */
+.note{border-radius:12px;padding:14px 18px;font-size:14px;line-height:1.65;margin:14px 0}
+.note.warn{background:var(--rdb);border:1px solid var(--rdl)}
+.note.tip{background:var(--gnb);border:1px solid var(--gnl)}
+.note.info{background:var(--blb);border:1px solid var(--bll)}
+.note.caut{background:var(--ylb);border:1px solid var(--yll)}
+.note .nt{font-weight:800;margin-bottom:5px;display:block;font-size:14.5px}
+.note.warn .nt{color:var(--red)}
+.note.tip .nt{color:var(--grn)}
+.note.info .nt{color:var(--blu)}
+.note.caut .nt{color:var(--ylw)}
+.note p{color:inherit;font-size:14px;margin-bottom:6px}
+.note p:last-child{margin-bottom:0}
+.note ul{padding-left:18px;margin-top:6px}
+.note ul li{font-size:14px;margin-bottom:3px}
+
+/* CODE */
+.cb{background:#080706;border:1px solid var(--line2);border-radius:12px;overflow:hidden;margin:10px 0}
+.cb-hd{display:flex;align-items:center;justify-content:space-between;padding:7px 14px;border-bottom:1px solid var(--line);background:#0d0b09}
+.cb-lang{font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:1.5px;color:var(--ink3);font-weight:600;text-transform:uppercase}
+.cpb{font-family:"IBM Plex Mono",monospace;font-size:9px;font-weight:700;background:var(--bg3);color:var(--ink3);border:1px solid var(--line2);padding:2px 9px;border-radius:4px;cursor:pointer;transition:all .15s}
+.cpb:hover{color:var(--ink)}
+.cpb.ok{background:var(--gnb);color:var(--grn);border-color:var(--gnl)}
+pre{padding:14px 16px;overflow-x:auto;scrollbar-width:thin;scrollbar-color:var(--line2) transparent}
+pre::-webkit-scrollbar{height:4px}
+pre::-webkit-scrollbar-thumb{background:var(--line2);border-radius:2px}
+pre code{font-family:"IBM Plex Mono",monospace;font-size:13px;line-height:1.7;color:#d0c8b8}
+.cm{color:var(--ink3);font-style:italic}
+code{background:var(--bg3);padding:1px 6px;border-radius:4px;font-size:12.5px;font-family:"IBM Plex Mono",monospace;color:var(--acc2)}
+
+/* STEPS */
+.steps{display:flex;flex-direction:column;margin:8px 0 20px}
+.step{display:flex;gap:14px;padding:0 0 24px 0;position:relative}
+.step:last-child{padding-bottom:0}
+.step::before{content:'';position:absolute;left:13px;top:28px;bottom:0;width:1px;background:var(--line2)}
+.step:last-child::before{display:none}
+.snum{width:28px;height:28px;border-radius:8px;background:var(--accent);color:var(--bg);font-family:"IBM Plex Mono",monospace;font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative;z-index:1;margin-top:1px}
+.scon{flex:1}
+.sti{font-size:15px;font-weight:800;margin-bottom:4px}
+.sde{color:var(--ink2);font-size:14px;line-height:1.65}
+.sde code{background:var(--bg3);padding:1px 6px;border-radius:4px;font-size:12px;font-family:"IBM Plex Mono",monospace;color:var(--acc2)}
+
+/* CARD */
+.card{background:var(--bg2);border:1px solid var(--line2);border-radius:14px;overflow:hidden;margin-bottom:14px}
+.card-h{padding:12px 18px 10px;border-bottom:1px solid var(--line);display:flex;align-items:flex-start;gap:10px}
+.card-h .ic{font-size:18px;flex-shrink:0;margin-top:1px}
+.card-h .ti{font-size:14.5px;font-weight:800}
+.card-h .su{font-size:12px;color:var(--ink3);margin-top:1px}
+.card-b{padding:14px 18px}
+
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse;font-size:13.5px;margin:10px 0 16px}
+.tbl th{text-align:left;padding:9px 12px;background:var(--bg3);color:var(--ink2);font-weight:700;font-size:11.5px;letter-spacing:.5px;border-bottom:2px solid var(--line2)}
+.tbl td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.55}
+.tbl tr:last-child td{border-bottom:none}
+.good{color:var(--grn);font-weight:700}
+.bad{color:var(--red);font-weight:700}
+.mid{color:var(--ylw);font-weight:700}
+
+/* CHOICE GRID */
+.cgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0 20px}
+.ch{border-radius:14px;border:1px solid;padding:18px 16px;position:relative;overflow:hidden}
+.ch::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.ch.rec{background:var(--gnb);border-color:var(--gnl)}
+.ch.rec::before{background:var(--grn)}
+.ch.ok{background:var(--blb);border-color:var(--bll)}
+.ch.ok::before{background:var(--blu)}
+.ch.no{background:var(--rdb);border-color:var(--rdl)}
+.ch.no::before{background:var(--red)}
+.ch-b{font-family:"IBM Plex Mono",monospace;font-size:9px;font-weight:700;letter-spacing:1.5px;margin-bottom:8px;display:block}
+.ch.rec .ch-b{color:var(--grn)}
+.ch.ok .ch-b{color:var(--blu)}
+.ch.no .ch-b{color:var(--red)}
+.ch-t{font-size:15px;font-weight:800;margin-bottom:5px}
+.ch-d{font-size:13px;color:var(--ink2);line-height:1.55}
+
+/* PHRASE LIST */
+.pl{display:flex;flex-direction:column;gap:8px}
+.pr{background:var(--bg2);border:1px solid var(--line2);border-radius:12px;overflow:hidden;display:grid;grid-template-columns:110px 1fr}
+.pr .sit{background:var(--bg3);padding:11px 13px;font-size:11.5px;color:var(--ink3);line-height:1.5;border-right:1px solid var(--line);display:flex;align-items:center}
+.pr .say{padding:11px 15px;font-size:14px;font-weight:600;line-height:1.6}
+.pr .say .em{color:var(--acc2)}
+.pr .say .stop{color:var(--red);font-weight:800}
+
+/* FILE MAP */
+.fmap{display:flex;flex-direction:column;gap:8px;margin:10px 0}
+.frow{background:var(--bg2);border:1px solid var(--line2);border-radius:11px;padding:12px 16px;display:flex;gap:14px;align-items:flex-start}
+.frow .fn{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--acc2);font-weight:700;flex-shrink:0;min-width:110px;padding-top:1px}
+.frow .fd{font-size:13.5px;color:var(--ink2);line-height:1.55}
+.frow .fd strong{color:var(--ink);font-weight:700}
+
+/* RULE BLOCK */
+.rb{border-radius:13px;border:1px solid;overflow:hidden;margin-bottom:12px}
+.rb.r{background:var(--rdb);border-color:var(--rdl)}
+.rb.g{background:var(--gnb);border-color:var(--gnl)}
+.rb .rh{padding:11px 16px 9px;font-weight:800;font-size:14px;display:flex;align-items:center;gap:7px;border-bottom:1px solid rgba(255,255,255,.05)}
+.rb.r .rh{color:var(--red)}
+.rb.g .rh{color:var(--grn)}
+.rl{list-style:none}
+.rl li{padding:9px 16px 9px 40px;position:relative;font-size:13.5px;border-bottom:1px solid rgba(255,255,255,.03);color:var(--ink2)}
+.rl li:last-child{border-bottom:none}
+.rl li::before{position:absolute;left:15px;top:10px;font-size:11px;font-weight:900}
+.rb.r .rl li::before{content:"✕";color:var(--red)}
+.rb.g .rl li::before{content:"✓";color:var(--grn)}
+.rl li .k{font-weight:700;color:var(--ink)}
+.rl li .d{color:var(--ink3);font-size:12.5px}
+
+/* HERO */
+.hero{padding:52px 0 56px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-40px;right:-60px;width:320px;height:320px;background:radial-gradient(circle,rgba(240,146,10,.1),transparent 70%);pointer-events:none}
+.hero-ey{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:3px;color:var(--accent);font-weight:600;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.hero-ey::before{content:'';width:18px;height:1px;background:var(--accent);display:block}
+.hero h1{font-size:38px;font-weight:900;letter-spacing:-1.2px;line-height:1.1;margin-bottom:14px}
+.hero h1 .hl{color:var(--accent)}
+.hero-d{font-size:15.5px;color:var(--ink2);max-width:52ch;line-height:1.7;margin-bottom:26px}
+.hero-tags{display:flex;gap:8px;flex-wrap:wrap}
+.tp{font-family:"IBM Plex Mono",monospace;font-size:10.5px;font-weight:600;padding:3px 10px;border-radius:16px;letter-spacing:.5px}
+.tp.g{background:var(--gnb);color:var(--grn);border:1px solid var(--gnl)}
+.tp.r{background:var(--rdb);color:var(--red);border:1px solid var(--rdl)}
+.tp.b{background:var(--blb);color:var(--blu);border:1px solid var(--bll)}
+.tp.y{background:var(--ylb);color:var(--ylw);border:1px solid var(--yll)}
+
+/* CONTEXT METER */
+.ctx-meter{background:var(--bg2);border:1px solid var(--line2);border-radius:13px;padding:16px 18px;margin:12px 0}
+.ctx-bar{height:12px;border-radius:6px;background:var(--line2);margin:8px 0;overflow:hidden;position:relative}
+.ctx-fill{height:100%;border-radius:6px;transition:width .3s}
+.ctx-fill.safe{background:var(--grn)}
+.ctx-fill.warn{background:var(--ylw)}
+.ctx-fill.crit{background:var(--red)}
+.ctx-labels{display:flex;justify-content:space-between;font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--ink3);margin-top:4px}
+
+/* FOOTER */
+.ft{margin-top:64px;background:var(--bg2);border:1.5px solid var(--accent);border-radius:18px;padding:30px 26px;text-align:center}
+.ft .fi{font-size:30px;margin-bottom:10px}
+.ft p{font-size:16px;font-weight:700;line-height:1.75}
+.ft .em{color:var(--accent)}
+.ft .mono{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink3);margin-top:12px;display:block}
+
+/* MOBILE */
+@media(max-width:640px){
+  .content{padding:28px 14px 80px}
+  .hero h1{font-size:28px}
+  .cgrid{grid-template-columns:1fr}
+  .pr{grid-template-columns:1fr}
+  .pr .sit{border-right:none;border-bottom:1px solid var(--line)}
+  h2{font-size:22px}
+  pre code{font-size:11.5px}
+  .frow{flex-direction:column;gap:4px}
+  .frow .fn{min-width:0}
+}
+</style>
+</head>
+<body>
+
+<header class="tb">
+  <a class="tb-logo" href="#">🦞 OpenClaw</a>
+  <span class="tb-v">新手完全教程</span>
+  <div class="tb-sp"></div>
+  <a class="tb-doc" href="https://docs.openclaw.ai" target="_blank">官方文档 ↗</a>
+</header>
+
+<nav class="tab-nav" id="tabNav">
+  <button class="tab-btn active" data-tab="t0"><span class="tn">00</span> 认识 OpenClaw</button>
+  <button class="tab-btn" data-tab="t1"><span class="tn">01</span> 安装准备</button>
+  <button class="tab-btn" data-tab="t2"><span class="tn">02</span> 安装 OpenClaw</button>
+  <button class="tab-btn" data-tab="t3"><span class="tn">03</span> 配置模型</button>
+  <button class="tab-btn" data-tab="t4"><span class="tn">04</span> 配通讯</button>
+  <button class="tab-btn" data-tab="t5"><span class="tn">05</span> 核心概念</button>
+  <button class="tab-btn" data-tab="t6"><span class="tn">06</span> 第一次对话</button>
+  <button class="tab-btn" data-tab="t7"><span class="tn">07</span> 日常管理</button>
+  <button class="tab-btn" data-tab="t8"><span class="tn">08</span> Bug 排查</button>
+  <button class="tab-btn" data-tab="t9"><span class="tn">09</span> 控制 Agent</button>
+</nav>
+
+<main class="content">
+
+<!-- ===== TAB 0: 认识 ===== -->
+<div class="tab-panel active" id="t0">
+  <div class="hero">
+    <div class="hero-ey">新手完全教程</div>
+    <h1>OpenClaw<br><span class="hl">从零开始到真正用起来</span></h1>
+    <p class="hero-d">你不需要会写代码，不需要懂服务器，只需要按步骤来。这份教程把每一步都写到能照着做的程度。</p>
+    <div class="hero-tags">
+      <span class="tp g">基于官方文档</span>
+      <span class="tp b">Ubuntu 虚拟机方案</span>
+      <span class="tp y">适合零基础</span>
+      <span class="tp r">包含踩坑指南</span>
+    </div>
+  </div>
+
+  <span class="ey">OpenClaw 是什么</span>
+  <h2>一句话说清楚</h2>
+  <p class="lead">OpenClaw 是一个装在你电脑上的 AI 管家系统。你告诉它做什么，它帮你干活——可以分析数据、写代码、整理文档，还能连接微信、飞书、Telegram，让你用手机就能随时发号施令。</p>
+
+  <div class="card">
+    <div class="card-h"><span class="ic">🤔</span><div><div class="ti">它和直接用 ChatGPT / Claude 有什么区别？</div></div></div>
+    <div class="card-b">
+      <table class="tbl">
+        <tr><th>对比项</th><th>普通 AI 聊天</th><th>OpenClaw</th></tr>
+        <tr><td>能操作你的文件吗</td><td class="bad">✕ 不行</td><td class="good">✓ 可以读写文件、执行命令</td></tr>
+        <tr><td>手机随时控制</td><td class="bad">✕ 要开网页</td><td class="good">✓ 连接飞书/Telegram 用手机发消息就行</td></tr>
+        <tr><td>同时用多个 AI 分工合作</td><td class="bad">✕ 不行</td><td class="good">✓ 主控+专员多 Agent 团队</td></tr>
+        <tr><td>记得你之前说的话</td><td class="mid">△ 关了对话就忘</td><td class="good">✓ 有记忆文件，跨对话保留</td></tr>
+        <tr><td>数据在自己电脑上</td><td class="bad">✕ 全在对方服务器</td><td class="good">✓ 本地运行，数据不出门</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <h3>它怎么运作的（不需要完全懂，大概知道就行）</h3>
+  <p>OpenClaw 在你电脑上跑一个叫 <strong>Gateway（网关）</strong>的程序，它负责：</p>
+  <ul style="padding-left:20px;margin:10px 0;color:var(--ink2);font-size:14px;line-height:2">
+    <li>连接各种聊天软件（Telegram、飞书等）——你发消息它就收到了</li>
+    <li>把你的消息发给大模型（DeepSeek、Claude 等）——让 AI 来想怎么回应</li>
+    <li>把 AI 的回应执行出来——比如真的去读文件、真的去运行一段代码</li>
+    <li>把结果发回给你</li>
+  </ul>
+  <p>你的角色：<strong>只需要发消息告诉它干什么</strong>。Gateway 和 AI 之间的通信全自动。</p>
+
+  <hr class="sec-divider">
+
+  <span class="ey">为什么要装虚拟机</span>
+  <h2>装在哪台机器，很重要</h2>
+  <p class="lead">OpenClaw 能操作你电脑上的文件和命令，权限很大。如果它出错或者被恶意利用，轻则删文件，重则影响整台电脑。</p>
+
+  <div class="note warn">
+    <span class="nt">⚠️ 真实发生过的安全问题</span>
+    <p>2026年初，OpenClaw 被发现一个严重漏洞（CVE-2026-25253，危险等级 8.8/10）：攻击者只需让你点一个链接，就能在你的电脑上执行任意命令。如果 OpenClaw 装在工作机上，这意味着你的全部文件都可能被波及。</p>
+    <p>官方现已修复，但新手阶段不了解边界，用虚拟机隔离是最安全的选择。</p>
+  </div>
+
+  <div class="cgrid">
+    <div class="ch rec">
+      <span class="ch-b">✦ 推荐 · 本教程方案</span>
+      <div class="ch-t">🖥️ 虚拟机（VMware）</div>
+      <div class="ch-d">在你现有的电脑里建一个隔离的 Ubuntu 虚拟机，OpenClaw 装在里面。出问题最多影响虚拟机，你电脑上的真实文件安全。</div>
+    </div>
+    <div class="ch ok">
+      <span class="ch-b">○ 也可以</span>
+      <div class="ch-t">☁️ 云服务器</div>
+      <div class="ch-d">买一台阿里云/腾讯云服务器（2核4G，约 68-99 元/年）。出问题只影响云服务器，本地完全安全。但有些需要本地权限的功能用不了。</div>
+    </div>
+    <div class="ch ok">
+      <span class="ch-b">○ 最好（如果有）</span>
+      <div class="ch-t">🍎 闲置电脑</div>
+      <div class="ch-d">有闲置 Mac 或 Linux 电脑是最理想的。macOS 上 OpenClaw 功能最完整，完全不影响主力电脑。</div>
+    </div>
+    <div class="ch no">
+      <span class="ch-b">✕ 新手不建议</span>
+      <div class="ch-t">💻 直接装在工作电脑</div>
+      <div class="ch-d">技术上可以，但 Agent 的权限和你的账号一样大。新手摸不清边界，容易出意外。熟悉之后再考虑。</div>
+    </div>
+  </div>
+
+  <div class="note info">
+    <span class="nt">💡 本教程走这条路</span>
+    <p>Windows 电脑 → 装 VMware 虚拟机 → 虚拟机里装 Ubuntu 24.04 → Ubuntu 里装 OpenClaw。安全、可控、遇到问题容易恢复。</p>
+  </div>
+
+  <div class="ft">
+    <div class="fi">🦞</div>
+    <p>了解完了，点上方标签页<span class="em">「01 安装准备」</span>继续</p>
+  </div>
+</div>
+
+<!-- ===== TAB 1: 安装准备 ===== -->
+<div class="tab-panel" id="t1">
+  <span class="ey">01 · 安装准备</span>
+  <h2>开始之前先检查这些</h2>
+  <p class="lead">在开始装任何东西之前，先确认你的电脑满足基本要求，然后按顺序准备好需要的软件和文件。</p>
+
+  <h3>运行 OpenClaw 的环境要求</h3>
+  <div class="note info">
+    <span class="nt">📋 官方系统要求（来自 docs.openclaw.ai/install）</span>
+    <ul>
+      <li><strong>Node.js 24</strong>（推荐）或 Node 22.16 以上——安装脚本会自动处理，你不用手动安装</li>
+      <li><strong>操作系统</strong>：macOS、Linux、或 Windows（WSL2 更稳定）</li>
+      <li>本教程用 <strong>Ubuntu 24.04 LTS</strong> 虚拟机，满足以上所有要求</li>
+    </ul>
+  </div>
+
+  <h3>你的 Windows 电脑需要满足</h3>
+  <table class="tbl">
+    <tr><th>项目</th><th>最低要求</th><th>推荐配置</th><th>说明</th></tr>
+    <tr><td>内存（RAM）</td><td>16 GB</td><td>32 GB+</td><td>虚拟机要分走 8GB</td></tr>
+    <tr><td>硬盘空闲空间</td><td>70 GB</td><td>100 GB+</td><td>建议放在非 C 盘</td></tr>
+    <tr><td>处理器（CPU）</td><td>4核</td><td>8核+</td><td>虚拟机要分走 4核</td></tr>
+    <tr><td>网络</td><td>能上网</td><td>稳定宽带</td><td>下载镜像和 API 调用</td></tr>
+  </table>
+  <div class="note caut">
+    <span class="nt">怎么查看自己电脑的内存和硬盘？</span>
+    <p>按 <code>Win + E</code> 打开文件管理器 → 右键「此电脑」→「属性」，可以看到内存大小。硬盘剩余空间在文件管理器左侧每个盘下面都有显示。</p>
+  </div>
+
+  <hr class="sec-divider">
+
+  <h3>第一步：下载并安装 VMware Workstation Pro</h3>
+  <p>VMware 是用来建虚拟机的软件，现在对个人用户完全免费。</p>
+  <div class="steps">
+    <div class="step">
+      <div class="snum">1</div>
+      <div class="scon">
+        <div class="sti">去 Broadcom 官网注册账号</div>
+        <div class="sde">打开浏览器，访问 <code>broadcom.com</code> → 右上角点「Register」→ 填写邮箱和基本信息注册 → 验证邮箱。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="snum">2</div>
+      <div class="scon">
+        <div class="sti">找到并下载 VMware Workstation Pro</div>
+        <div class="sde">登录后，在顶部搜索「VMware Workstation Pro」→ 点进去找「VMware Workstation Pro for Windows」→ 选最新版本下载（文件大约 600MB）。</div>
+        <div class="note caut" style="margin-top:8px">
+          <span class="nt">Broadcom 网站很复杂，找不到？</span>
+          <p>直接搜索「VMware Workstation Pro 下载」，很多国内教程都有直链，或者搜索「VMware 25H2 下载」找最新版。</p>
+        </div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="snum">3</div>
+      <div class="scon">
+        <div class="sti">安装 VMware</div>
+        <div class="sde">双击下载的 .exe 文件 → 一路点「下一步」→ 如果问是否安装增强的键盘驱动，选「是」→ 安装完成后<strong>重启电脑</strong>（必须重启，不然虚拟机可能跑不起来）。</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="sec-divider">
+
+  <h3>第二步：下载 Ubuntu 镜像文件</h3>
+  <p>Ubuntu 是一种免费的 Linux 操作系统。我们要把它装进虚拟机里，再在里面装 OpenClaw。</p>
+  <div class="note info">
+    <span class="nt">💡 为什么选 Ubuntu 24.04 LTS？</span>
+    <p>LTS 是「长期支持」版本，稳定、有人维护、bug 少。24.04 是当前最新的 LTS，和 OpenClaw 兼容性最好。22.04 也可以用，已经有的不用重新下。</p>
+  </div>
+  <div class="cb">
+    <div class="cb-hd"><span class="cb-lang">国内下载地址（速度快）</span></div>
+    <pre><code><span class="cm"># 清华大学镜像站（推荐）</span>
+https://mirrors.tuna.tsinghua.edu.cn/ubuntu-releases/24.04/
+
+<span class="cm"># 找到并下载这个文件（约 5.7GB）：</span>
+ubuntu-24.04.2-desktop-amd64.iso
+
+<span class="cm"># 备用：阿里云镜像</span>
+https://mirrors.aliyun.com/ubuntu-releases/24.04/</code></pre>
+  </div>
+  <div class="note caut">
+    <span class="nt">下载完怎么确认文件没坏？</span>
+    <p>正常下载完的 .iso 文件大小应该在 5.5~5.8GB 左右。如果文件太小（比如只有几十 MB），说明下载中断了，要重新下。</p>
+  </div>
+
+  <hr class="sec-divider">
+
+  <h3>第三步：在 VMware 里建虚拟机</h3>
+  <div class="steps">
+    <div class="step">
+      <div class="snum">1</div>
+      <div class="scon">
+        <div class="sti">打开 VMware，新建虚拟机</div>
+        <div class="sde">打开 VMware Workstation → 点左上角「文件」→「新建虚拟机」→ 选「典型（推荐）」→ 点「下一步」。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="snum">2</div>
+      <div class="scon">
+        <div class="sti">选择 Ubuntu 镜像文件</div>
+        <div class="sde">选「安装程序磁盘映像文件（iso）」→ 点「浏览」→ 找到你刚下载的 <code>ubuntu-24.04.2-desktop-amd64.iso</code> 文件 → VMware 会自动识别为 Ubuntu，显示「将使用简易安装」→ 点「下一步」。</div>
+        <div class="note caut" style="margin-top:8px">
+          <span class="nt">找不到下载的文件？</span>
+          <p>一般在「下载」文件夹里。按 <code>Win + E</code> 打开文件管理器，点左边「下载」就能找到。</p>
+        </div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="snum">3</div>
+      <div class="scon">
+        <div class="sti">填写虚拟机信息</div>
+        <div class="sde">
+          全名（Full name）：随便填，比如 <code>OpenClaw</code><br>
+          用户名（User name）：填英文，比如 <code>claw</code>（后面要用）<br>
+          密码：设一个你记得住的密码（<strong>一定要记住！</strong>后面每次输命令都要用）<br>
+          然后点「下一步」。
+        </div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="snum">4</div>
+      <div class="scon">
+        <div class="sti">设置虚拟机名称和存放位置</div>
+        <div class="sde">
+          虚拟机名称：填 <code>Ubuntu-OpenClaw</code>（方便认）<br>
+          位置：点「浏览」，<strong>选非 C 盘的路径</strong>，比如 <code>D:\VMs\Ubuntu-OpenClaw</code>（D 盘要有至少 70GB 空间）<br>
+          然后点「下一步」。
+        </div>
+        <div class="note warn" style="margin-top:8px">
+          <span class="nt">⚠️ 不要放在 C 盘！</span>
+          <p>虚拟机文件很大（装完可能占 20-40GB），放 C 盘很容易把系统盘撑满，导致电脑变慢甚至无法启动。一定要选 D 盘或其他盘。</p>
+        </div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="snum">5</div>
+      <div class="scon">
+        <div class="sti">设置磁盘大小</div>
+        <div class="sde">最大磁盘大小填 <code>60</code>（单位 GB）→ 选「将虚拟磁盘存储为单个文件」→ 点「下一步」。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="snum">6</div>
+      <div class="scon">
+        <div class="sti">自定义硬件（重要！不要跳过）</div>
+        <div class="sde">点「自定义硬件」→ 做这两个修改：<br><br>
+          <strong>内存</strong>：把滑块或数字改为 <code>8192</code>（即 8GB）<br>
+          <strong>处理器</strong>：核心数量改为 <code>4</code><br><br>
+          改完点「关闭」→ 点「完成」。
+        </div>
+        <div class="note info" style="margin-top:8px">
+          <span class="nt">为什么要改这些？</span>
+          <p>VMware 默认只给虚拟机分配很少的内存（可能只有 2GB），OpenClaw 运行需要至少 4GB，多个 Agent 工作时需要 6-8GB。内存不够会导致系统卡顿甚至崩溃。</p>
+        </div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="snum">7</div>
+      <div class="scon">
+        <div class="sti">等待 Ubuntu 自动安装</div>
+        <div class="sde">VMware 会自动启动虚拟机并开始安装 Ubuntu（「简易安装」模式，全自动）。这个过程大约需要 <strong>15-30 分钟</strong>，你可以去做别的事，看到桌面出现就说明装好了。<br><br>安装完成后，虚拟机会自动重启，用你设置的用户名和密码登录。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="snum">8</div>
+      <div class="scon">
+        <div class="sti">安装 VMware Tools（让虚拟机更好用）</div>
+        <div class="sde">Ubuntu 启动后，在 VMware 顶部菜单点「虚拟机」→「安装 VMware Tools」。装完后，你可以在 Windows 和 Ubuntu 之间复制粘贴文字，更方便操作。<br><br>在 Ubuntu 里按 <code>Ctrl+Alt+T</code> 打开终端，输入：</div>
+        <div class="cb" style="margin-top:8px">
+          <div class="cb-hd"><span class="cb-lang">bash</span><button class="cpb" onclick="cp(this,'v1')">复制</button></div>
+          <pre><code id="v1">sudo apt install open-vm-tools-desktop -y</code></pre>
+        </div>
+        <div class="sde" style="margin-top:6px">输入后按回车，它会问你密码，输入你之前设置的密码（输入时屏幕上不显示任何字符，这是正常的），输完按回车。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="note tip">
+    <span class="nt">✓ 验证虚拟机正常</span>
+    <p>在 Ubuntu 的终端里输入 <code>ping -c 4 baidu.com</code>，如果看到数据在传输说明网络正常。看到「4 packets transmitted」就可以继续下一步了。</p>
+  </div>
+
+  <div class="note caut">
+    <span class="nt">⚡ 终端是什么？怎么打开？</span>
+    <p>终端（Terminal）就是那个黑色的命令行窗口，你在里面输入命令来操作电脑。在 Ubuntu 里按 <code>Ctrl + Alt + T</code> 就能打开。后面所有命令都在这里输入。</p>
+  </div>
+</div>
+
+<!-- ===== TAB 2: 安装 OpenClaw ===== -->
+<div class="tab-panel" id="t2">
+  <span class="ey">02 · 安装 OpenClaw</span>
+  <h2>在 Ubuntu 虚拟机里安装 OpenClaw</h2>
+  <p class="lead">以下所有步骤都在 Ubuntu 虚拟机里操作。打开终端（<code>Ctrl+Alt+T</code>），照着输命令就行。</p>
+
+  <div class="note caut">
+    <span class="nt">📋 输命令的注意事项</span>
+    <p><strong>怎么输命令：</strong>把命令复制，在终端里点右键选「粘贴」（或者按 <code>Ctrl+Shift+V</code>），然后按回车执行。</p>
+    <p><strong>输入密码时：</strong>屏幕上不会显示任何字符（不是没输进去，是故意隐藏的），输完直接按回车。</p>
+    <p><strong>出现 [Y/n] 问你的：</strong>输入 <code>y</code> 然后回车，表示同意继续。</p>
+  </div>
+
+  <h3>第一步：更新系统，安装 curl</h3>
+  <div class="cb">
+    <div class="cb-hd"><span class="cb-lang">bash</span><button class="cpb" onclick="cp(this,'i1')">复制</button></div>
+    <pre><code id="i1">sudo apt update && sudo apt install -y curl</code></pre>
+  </div>
+  <p style="margin-top:8px">这条命令做两件事：更新软件列表，然后安装 curl（一个用来下载文件的工具）。可能需要等 1-2 分钟。</p>
+
+  <hr class="sec-divider">
+
+  <h3>第二步：运行 OpenClaw 安装脚本</h3>
+  <p>这是官方的一键安装脚本，它会自动帮你安装好 Node.js（OpenClaw 运行需要它）和 OpenClaw 本身。</p>
+  <div class="cb">
+    <div class="cb-hd"><span class="cb-lang">bash</span><button class="cpb" onclick="cp(this,'i2')">复制</button></div>
+    <pre><code id="i2">curl -fsSL https://openclaw.ai/install.sh | bash</code></pre>
+  </div>
+  <p style="margin-top:8px">这个命令会运行一段时间（可能 5-10 分钟），等它完成后，会自动进入引导配置界面。</p>
+
+  <div class="note info">
+    <span class="nt">💡 Node.js 是什么？为什么要装它？</span>
+    <p>Node.js 是 OpenClaw 运行所需要的「基础环境」——就像 Python 程序需要装 Python 才能跑，OpenClaw 需要 Node.js 才能跑。安装脚本会自动安装 Node.js 24，你不需要手动操作。</p>
+  </div>
+
+  <hr class="sec-divider">
+
+  <h3>第三步：引导配置（onboard）—— 每一步怎么选</h3>
+  <p>安装完成后会自动进入引导界面，用方向键 ↑↓ 选择，回车确认。</p>
+
+  <div class="note caut">
+    <span class="nt">📋 引导界面每一步的选择</span>
+    <p><strong>Quick Start or Full Setup？</strong> → 选 <code>Quick Start</code>（快速开始）</p>
+    <p><strong>模型提供商（Model provider）？</strong> → 先选 <code>Skip for now</code>（稍后配置，我们下一节单独处理）</p>
+    <p><strong>Filter providers？</strong> → 选 <code>All providers</code></p>
+    <p><strong>Keep current or update？</strong> → 选 <code>Keep current</code></p>
+    <p><strong>Channel（通讯平台）？</strong> → 选 <code>Skip for now</code>（后面单独配）</p>
+    <p><strong>Search settings？</strong> → 选 <code>Skip for now</code></p>
+    <p><strong>Skills？</strong> → 选 <code>Skip for now</code></p>
+    <p><strong>Hooks？</strong> → 选 <code>Skip for now</code></p>
+    <p><strong>启动方式（How to start the agent）？</strong> → 选 <code>Web UI</code>（网页界面，最方便）</p>
+  </div>
+
+  <hr class="sec-divider">
+
+  <h3>第四步：验证安装成功</h3>
+  <p>引导完成后，在终端里输入这些命令验证：</p>
+  <div class="cb">
+    <div class="cb-hd"><span class="cb-lang">bash</span><button class="cpb" onclick="cp(this,'i3')">复制</button></div>
+    <pre><code id="i3"><span class="cm"># 查看版本号，能看到版本号就说明安装成功了</span>
+openclaw --version
+
+<span class="cm"># 查看 Gateway 是否在运行</span>
+openclaw gateway status
+
+<span class="cm"># 检查配置有没有问题</span>
+openclaw doctor</code></pre>
+  </div>
+  <div class="note tip">
+    <span class="nt">✓ 安装成功的标志</span>
+    <p><code>openclaw --version</code> 显示版本号（比如 2026.x.x）</p>
+    <p><code>openclaw gateway status</code> 显示「Runtime: running」</p>
+    <p><code>openclaw doctor</code> 没有 ERROR 级别的报错</p>
+  </div>
+
+  <hr class="sec-divider">
+
+  <h3>第五步：打开网页控制台</h3>
+  <div class="cb">
+    <div class="cb-hd"><span class="cb-lang">bash</span><button class="cpb" onclick="cp(this,'i4')">复制</button></div>
+    <pre><code id="i4">openclaw dashboard</code></pre>
+  </div>
+  <p style="margin-top:8px">这条命令会自动在浏览器里打开控制台（地址是 <code>http://127.0.0.1:18789</code>）。如果浏览器自动打开了一个页面，能看到对话框，说明一切正常！</p>
+
+  <div class="note warn">
+    <span class="nt">⚠️ 控制台打不开？</span>
+    <p>可能是 Gateway 没启动。在终端输入 <code>openclaw gateway status</code> 查看状态。如果显示 stopped，输入 <code>openclaw gateway restart</code> 重启。</p>
+    <p>还是不行？看「08 Bug 排查」章节。</p>
+  </div>
+
+  <hr class="sec-divider">
+
+  <h3>设置国内 npm 镜像（可选，让以后更新更快）</h3>
+  <div class="cb">
+    <div class="cb-hd"><span class="cb-lang">bash</span><button class="cpb" onclick="cp(this,'i5')">复制</button></div>
+    <pre><code id="i5">npm config set registry https://registry.npmmirror.com</code></pre>
+  </div>
+  <p style="margin-top:8px">这条命令把 npm（Node.js 的软件包管理器）的下载源换成国内镜像，以后更新 OpenClaw 或安装插件会快很多。</p>
+</div>
+
+<!-- ===== TAB 3: 配置模型 ===== -->
+<div class="tab-panel" id="t3">
+  <span class="ey">03 · 配置模型</span>
+  <h2>给 OpenClaw 连接一个 AI 大脑</h2>
+  <p class="lead">OpenClaw 本身只是个框架，它需要连接一个 AI 大模型才能「思考」。你需要去大模型平台注册账号、获取 API Key，然后填进 OpenClaw 里。</p>
+
+  <div class="note info">
+    <span class="nt">💡 API Key 是什么？</span>
+    <p>API Key 就像一张「通行证」，OpenClaw 拿着它去访问大模型的服务，大模型才知道是你在用、然后记账收费。API Key 是一串随机字符，格式类似 <code>sk-abc123xyz...</code>，要保密，不要给别人。</p>
+  </div>
+
+  <h3>选哪个模型？</h3>
+  <table class="tbl">
+    <tr><th>模型</th><th>价格</th><th>国内直连</th><th>效果</th><th>推荐程度</th></tr>
+    <tr><td><strong>DeepSeek V4 Flash</strong><br><code style="font-size:11px">deepseek/deepseek-v4-flash</code></td><td class="good">极低</td><td class="good">✓ 可以</td><td>快，日常任务够用</td><td class="good">★ 新手首选</td></tr>
+    <tr><td><strong>DeepSeek V4 Pro</strong><br><code style="font-size:11px">deepseek/deepseek-v4-pro</code></td><td class="mid">低</td><td class="good">✓ 可以</td><td>强，复杂推理更准</td><td class="mid">★ 进阶推荐</td></tr>
+    <tr><td><strong>Claude Sonnet 4</strong><br><code style="font-size:11px">anthropic/claude-sonnet-4-6</code></td><td class="mid">中等</td><td class="bad">✕ 需代理</td><td>极强，综合最好</td><td class="mid">有代理再用</td></tr>
+    <tr><td><strong>GPT-4o</strong><br><code style="font-size:11px">openai/gpt-5.5</code></td><td class="mid">中等</td><td class="bad">✕ 需代理</td><td>强</td><td>—</td></tr>
+    <tr><td><strong>Gemini Flash</strong></td><td class="good">有免费额度</td><td class="bad">✕ 需代理</td><td>快</td><td>—</td></tr>
+  </table>
+
+  <div class="note warn">
+    <span class="nt">⚠️ 关于 DeepSeek 旧模型名</span>
+    <p>你可能在网上看到有人用 <code>deepseek-chat</code> 或 <code>deepseek-reasoner</code>，这些是 V3.2 时代的旧名称，现在 OpenClaw 官方文档推荐使用 <strong><code>deepseek/deepseek-v4-flash</code></strong> 和 <strong><code>deepseek/deepseek-v4-pro</code></strong>。旧名称仍然能用，但新名称是 V4 模型，更新更好。</p>
+    <p>模型名称变动很快，建议随时查官方最新列表：<a href="https://docs.openclaw.ai/providers/deepseek" target="_blank" style="color:var(--acc2)">docs.openclaw.ai/providers/deepseek</a></p>
+  </div>
+
+  <hr class="sec-divider">
+
+  <h3>获取 DeepSeek API Key（国内可直连，新手首选）</h3>
+  <div class="steps">
+    <div class="step">
+      <div class="snum">1</div>
+      <div class="scon">
+        <div class="sti">注册 DeepSeek 开放平台账号</div>
+        <div class="sde">在浏览器（Ubuntu 里或 Windows 里都行）打开 <code>platform.deepseek.com</code> → 用手机号或邮箱注册。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="snum">2</div>
+      <div class="scon">
+        <div class="sti">创建 API Key</div>
+        <div class="sde">登录后，点左边「API Keys」→ 点「创建 API Key」→ 给它起个名字（比如「openclaw」）→ 点「创建」→ 把显示出来的那串字符（<code>sk-...</code>开头）<strong>复制保存好</strong>，它只显示一次！</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="snum">3</div>
+      <div class="scon">
+        <div class="sti">充值（可选，但建议充）</div>
+        <div class="sde">点「充值」→ 充 <strong>10 元人民币</strong>就够用很久了。DeepSeek V4 Flash 非常便宜，10 元可以对话几千次。也可以先不充，新注册有一些免费额度。</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="sec-divider">
+
+  <h3>把模型配置到 OpenClaw</h3>
+  <p>回到 Ubuntu 虚拟机，在终端里运行：</p>
+  <div class="cb">
+    <div class="cb-hd"><span class="cb-lang">bash</span><button class="cpb" onclick="cp(this,'m1')">复制</button></div>
+    <pre><code id="m1">openclaw onboard --auth-choice deepseek-api-key</code></pre>
+  </div>
+  <p style="margin-top:8px">这条命令会引导你输入 DeepSeek API Key，并自动把 <code>deepseek/deepseek-v4-flash</code> 设为默认模型。</p>
+
+  <div class="note caut">
+    <span class="nt">📋 如果想手动配置（更灵活）</span>
+    <p>也可以运行 <code>openclaw onboard</code> 然后手动选择，按以下顺序选：</p>
+    <p><strong>Gateway 位置？</strong> → 选 <code>local</code></p>
+    <p><strong>配置模块？</strong> → 选 <code>Model</code></p>
+    <p><strong>提供商？</strong> → 选 <code>Custom Provider</code></p>
+    <p><strong>Base URL？</strong> → 输入 <code>https://api.deepseek.com</code></p>
+    <p><strong>API Key？</strong> → 粘贴你的 Key</p>
+    <p><strong>兼容性？</strong> → 选 <code>OpenAI-compatible</code></p>
+    <p><strong>模型 ID？</strong> → 输入 <code>deepseek/deepseek-v4-flash</code></p>
+  </div>
+
+  <hr class="sec-divider">
+
+  <h3>验证模型配置成功</h3>
+  <div class="cb">
+    <div class="cb-hd"><span class="cb-lang">bash</span><button class="cpb" onclick="cp(this,'m2')">复制</button></div>
+    <pre><code id="m2"><span class="cm"># 重启 Gateway 让配置生效</span>
+openclaw gateway restart
+
+<span class="cm"># 查看已配置的模型列表</span>
+openclaw models list --provider deepseek</code></pre>
+  </div>
+  <p style="margin-top:8px">然后运行 <code>openclaw dashboard</code> 打开控制台，在聊天框输入「你好」，能收到回复就说明模型配置成功了。</p>
+
+  <div class="note info">
+    <span class="nt">deepseek-v4-flash 和 deepseek-v4-pro 有什么区别？</span>
+    <p><strong>V4 Flash</strong>：速度快、价格低，日常聊天、简单分析、整理文档用这个，新手入门用这个。</p>
+    <p><strong>V4 Pro</strong>：慢一些、贵一些，但推理能力强很多，复杂数学、代码分析、深度分析任务用这个。</p>
+    <p>两个都可以同时配置，在对话里用 <code>/model deepseek/deepseek-v4-pro</code> 临时切换。</p>
+  </div>
+</div>
+
+<!-- ===== TAB 4: 配通讯 ===== -->
+<div class="tab-panel" id="t4">
+  <span class="ey">04 · 配通讯</span>
+  <h2>让 Agent 出现在你的手机上</h2>
+  <p class="lead">配好通讯渠道后，你就可以用手机上的 Telegram 或飞书给 Agent 发消息，不用每次都开电脑。这是 OpenClaw 最实用的功能之一。</p>
+
+  <h3>选哪个通讯平台？</h3>
+  <table class="tbl">
+    <tr><th>平台</th><th>国内直连</th><th>配置难度</th><th>适合谁</th></tr>
+    <tr><td>Telegram</td><td class="bad">✕ 需要代理</td><td class="good">最简单</td><td>有梯子的个人用户</td></tr>
+    <tr><td>飞书</td><td class="good">✓ 直连</td><td class="mid">中等</td><td>国内用户首选</td></tr>
+    <tr><td>钉钉</td><td class="good">✓ 直连</td><td class="mid">中等</td><td>企业用户</td></tr>
+    <tr><td>企业微信</td><td class="good">✓ 直连</td><td class="mid">中等</td><td>需要企业认证</td></tr>
+  </table>
+
+  <hr class="sec-divider">
+
+  <h3>方案 A：接 Telegram（配置最简单）</h3>
+  <div class="note info">
+    <span class="nt">前提：需要能访问 Telegram 的网络环境（梯子）</span>
+  </div>
+  <div class="steps">
+    <div class="step">
+      <div class="snum">1</div>
+      <div class="scon">
+        <div class="sti">在 Telegram 里找 BotFather 创建 Bot</div>
+        <div class="sde">
+          打开 Telegram → 搜索 <code>@BotFather</code>（官方机器人，蓝色认证勾）→ 发送 <code>/newbot</code><br><br>
+          它会问你：<br>
+          <strong>Bot 的显示名称</strong>：随便起，比如「我的AI助手」<br>
+          <strong>Bot 的用户名</strong>：必须以 <code>bot</code> 结尾，比如 <code>MyClawBot_bot</code><br><br>
+          创建成功后，BotFather 会给你一串 Token，格式类似：<br>
+          <code>1234567890:ABCDEFGhijklmnopqrstuvwxyz</code><br><br>
+          <strong>复制并保存这串 Token！</strong>（它只显示一次，丢了就要重新创建）
+        </div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="snum">2</div>
+      <div class="scon">
+        <div class="sti">在 OpenClaw 里配置 Telegram</div>
+        <div class="sde">在 Ubuntu 终端里运行：</div>
+        <div class="cb" style="margin-top:8px">
+          <div class="cb-hd"><span class="cb-lang">bash</span><button class="cpb" onclick="cp(this,'tg1')">复制</button></div>
+          <pre><code id="tg1">openclaw onboard</code></pre>
+        </div>
+        <div class="sde" style="margin-top:6px">然后选择：<code>Channels</code> → <code>Configure/link</code> → <code>Telegram (Bot API)</code> → 粘贴刚才的 Token → 回车确认</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="snum">3</div>
+      <div class="scon">
+        <div class="sti">重启 Gateway 并测试</div>
+        <div class="cb">
+          <div class="cb-hd"><span class="cb-lang">bash</span><button class="cpb" onclick="cp(this,'tg2')">复制</button></div>
+          <pre><code id="tg2">openclaw gateway restart</code></pre>
+        </div>
+        <div class="sde" style="margin-top:6px">在 Telegram 里找到你的 Bot，发「你好」，能收到回复就配置成功了。</div>
+      </div>
+    </div>
+  </div>
+  <div class="note warn">
+    <span class="nt">⚠️ 安全提醒：设置白名单</span>
+    <p>默认情况下，任何人都可以给你的 Bot 发消息并触发 Agent。一定要设置只允许你自己的账号访问。在 <code>~/.openclaw/openclaw.json</code> 里加入：</p>
+    <div class="cb" style="margin-top:8px">
+      <div class="cb-hd"><span class="cb-lang">json5</span></div>
+      <pre><code>{
+  channels: {
+    telegram: {
+      allowUsernames: ["你的Telegram用户名"]
+    }
+  }
+}</code></pre>
+    </div>
+  </div>
+
+  <hr class="sec-divider">
+
+  <h3>方案 B：接飞书（国内推荐）</h3>
+  <p>飞书用长连接方式接入，不需要公网 IP，国内直连稳定。</p>
+  <div class="steps">
+    <div class="step">
+      <div class="snum">1</div>
+      <div class="scon">
+        <div class="sti">在飞书开放平台创建自建应用</div>
+        <div class="sde">用浏览器打开 <code>open.feishu.cn</code> → 用飞书账号登录 → 点「开发者后台」→「创建企业自建应用」→ 填写应用名称（比如「AI助手」）→ 创建完成后，在「凭证与基础信息」页面找到并记下 <strong>App ID</strong> 和 <strong>App Secret</strong>。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="snum">2</div>
+      <div class="scon">
+        <div class="sti">配置事件订阅（必须选长连接）</div>
+        <div class="sde">在应用设置里找「事件订阅」→ 请求方式选<strong>「使用长连接接收事件」</strong>（<strong>不要选 Webhook！</strong> Webhook 需要公网 IP，用长连接不需要）→ 添加事件：<code>im.message.receive_v1</code>（接收消息）。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="snum">3</div>
+      <div class="scon">
+        <div class="sti">开通权限</div>
+        <div class="sde">在「权限管理」里搜索并开通以下权限（缺一不可）：</div>
+        <div class="cb" style="margin-top:8px">
+          <div class="cb-hd"><span class="cb-lang">需要开通的权限</span></div>
+          <pre><code>im:message:send_as_bot    <span class="cm"># 以机器人身份发消息</span>
+im:message                <span class="cm"># 接收消息</span>
+im:message.group_msg      <span class="cm"># 接收群消息（如需群聊）</span></code></pre>
+        </div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="snum">4</div>
+      <div class="scon">
+        <div class="sti">发布应用</div>
+        <div class="sde">「版本管理与发布」→「创建版本」→「发布」→ 自建应用审核自动通过，几秒完成。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="snum">5</div>
+      <div class="scon">
+        <div class="sti">在 OpenClaw 里启用飞书</div>
+        <div class="cb">
+          <div class="cb-hd"><span class="cb-lang">bash</span><button class="cpb" onclick="cp(this,'fs1')">复制</button></div>
+          <pre><code id="fs1">openclaw plugins enable feishu
+openclaw onboard</code></pre>
+        </div>
+        <div class="sde" style="margin-top:6px">然后选：<code>Channels</code> → <code>Configure/link</code> → <code>Feishu/Lark</code> → 依次输入 App ID 和 App Secret</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="snum">6</div>
+      <div class="scon">
+        <div class="sti">重启并确认</div>
+        <div class="cb">
+          <div class="cb-hd"><span class="cb-lang">bash</span><button class="cpb" onclick="cp(this,'fs2')">复制</button></div>
+          <pre><code id="fs2">openclaw gateway restart
+openclaw channels status --probe</code></pre>
+        </div>
+        <div class="sde" style="margin-top:6px">在飞书里找到你的机器人，发「你好」，能收到回复就成功了。</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TAB 5: 核心概念 ===== -->
+<div class="tab-panel" id="t5">
+  <span class="ey">05 · 核心概念</span>
+  <h2>这几个概念不懂会很懵</h2>
+  <p class="lead">不用全部背下来，看一遍有印象，用的时候回来查就行。</p>
+
+  <hr class="sec-divider">
+
+  <h3>工作区（Workspace）—— Agent 的「家」</h3>
+  <p>OpenClaw 在你的 Ubuntu 虚拟机里有一个固定的工作目录，叫做<strong>工作区</strong>，默认位置是：</p>
+  <div class="cb">
+    <div class="cb-hd"><span class="cb-lang">路径</span></div>
+    <pre><code>~/.openclaw/workspace</code></pre>
+  </div>
+  <p>所有重要的配置文件都在这里。工作区就像 Agent 的「办公室」，它的记忆、规则、个性都存在这里的文件里。</p>
+
+  <div class="note caut">
+    <span class="nt">怎么打开这个文件夹？</span>
+    <p>在 Ubuntu 终端里输入 <code>cd ~/.openclaw/workspace</code> 然后输入 <code>ls</code>（小写 LS），就能看到里面所有文件。</p>
+    <p>用文件管理器（图形界面）的话：按 <code>Ctrl+H</code> 显示隐藏文件，然后找 <code>.openclaw/workspace</code> 文件夹。</p>
+  </div>
+
+  <hr class="sec-divider">
+
+  <h3>工作区里有哪些文件？</h3>
+  <p>这些文件 OpenClaw 每次对话都会读取，相当于 Agent 的「记忆和规则」。</p>
+  <div class="fmap">
+    <div class="frow"><div class="fn">AGENTS.md</div><div class="fd"><strong>操作规则</strong>——告诉 Agent 怎么工作，最重要的文件。比如：要遵守哪些规则、什么时候必须问你确认、怎么汇报结果。</div></div>
+    <div class="frow"><div class="fn">SOUL.md</div><div class="fd"><strong>个性和风格</strong>——决定 Agent 说话的风格、语气、有没有个性。不写的话 Agent 会很无聊。</div></div>
+    <div class="frow"><div class="fn">USER.md</div><div class="fd"><strong>你的信息</strong>——告诉 Agent 你是谁、你的偏好、怎么称呼你。</div></div>
+    <div class="frow"><div class="fn">IDENTITY.md</div><div class="fd"><strong>Agent 的身份</strong>——Agent 的名字、简介。安装时自动创建。</div></div>
+    <div class="frow"><div class="fn">TOOLS.md</div><div class="fd"><strong>工具说明</strong>——关于本地工具的使用说明，只是给 Agent 看的提示，不控制工具开关。</div></div>
+    <div class="frow"><div class="fn">MEMORY.md</div><div class="fd"><strong>长期记忆</strong>（可选）——你想让 Agent 长期记住的事。比如你的工作方式、常用偏好等。</div></div>
+    <div class="frow"><div class="fn">memory/日期.md</div><div class="fd"><strong>每日记录</strong>——每天的对话记录，自动生成。</div></div>
+    <div class="frow"><div class="fn">skills/</div><div class="fd"><strong>工作技能包</strong>——你安装的各种技能（Skills）放在这个子文件夹里。</div></div>
+  </div>
+
+  <hr class="sec-divider">
+
+  <h3>SOUL.md 怎么写</h3>
+  <p>SOUL.md 是让 Agent 有「个性」的文件。不写的话 Agent 很死板，写得好会更好用。</p>
+  <div class="note info">
+    <span class="nt">官方建议：短而有力，不要写废话</span>
+    <p><strong>应该写什么</strong>：说话风格、是否直接、有没有幽默感、遇到问题时的态度</p>
+    <p><strong>不要写什么</strong>：公司规定式的废话（「请保持专业」「提供全面支持」这类），写了也没用</p>
+  </div>
+  <h4>一个实用的 SOUL.md 模板</h4>
+  <div class="cb">
+    <div class="cb-hd"><span class="cb-lang">SOUL.md 内容（复制到文件里）</span><button class="cpb" onclick="cp(this,'soul1')">复制</button></div>
+    <pre><code id="soul1"># 我的风格
+
+- 直接给结论，不废话，不用「当然！很高兴帮你！」这种开头
+- 回答要简短，能一句话说清就不说两句
+- 遇到我要做蠢事，直接说，别顺着我
+- 不确定的事情列出来，而不是猜着往下做
+- 幽默感是允许的，但不强求
+
+# 工作方式
+
+- 每次只解决一个明确的问题
+- 完成后说明：做了什么、结果是什么、下一步你需要做什么
+- 涉及删文件、改重要配置、对外发消息，必须先告诉我并等我确认</code></pre>
+  </div>
+  <p style="margin-top:8px">怎么写进文件？在终端里输入：</p>
+  <div class="cb">
+    <div class="cb-hd"><span class="cb-lang">bash</span><button class="cpb" onclick="cp(this,'soul2')">复制</button></div>
+    <pre><code id="soul2">nano ~/.openclaw/workspace/SOUL.md</code></pre>
+  </div>
+  <p style="margin-top:6px">这会打开文本编辑器，把上面的内容粘贴进去，然后按 <code>Ctrl+X</code>，再按 <code>Y</code>，再按回车保存。</p>
+
+  <hr class="sec-divider">
+
+  <h3>AGENTS.md 怎么写</h3>
+  <p>AGENTS.md 是 Agent 的「工作规则」，比 SOUL.md 更重要，直接决定 Agent 会不会乱做事。</p>
+  <h4>新手版 AGENTS.md 模板</h4>
+  <div class="cb">
+    <div class="cb-hd"><span class="cb-lang">AGENTS.md 内容</span><button class="cpb" onclick="cp(this,'ag1')">复制</button></div>
+    <pre><code id="ag1"># 核心规则
+
+以下动作必须先告诉我，等我说「可以」才能执行：
+- 删除任何文件或数据
+- 修改配置文件、API Key、密码、token
+- 重启或停止 Gateway 服务
+- 发送任何对外消息（邮件、通知、接口调用）
+- 上线、部署、提交到外部平台
+
+# 汇报格式
+
+每次完成任务后说明：
+1. 做了什么
+2. 结果是什么
+3. 你（用户）下一步需要做什么
+
+不要贴大段命令输出和错误日志，只说业务结论。
+
+# 不确定时
+
+遇到不清楚的需求，先列出问题问我，不要猜着往下做。</code></pre>
+  </div>
+  <p style="margin-top:8px">写入文件的命令：</p>
+  <div class="cb">
+    <div class="cb-hd"><span class="cb-lang">bash</span><button class="cpb" onclick="cp(this,'ag2')">复制</button></div>
+    <pre><code id="ag2">nano ~/.openclaw/workspace/AGENTS.md</code></pre>
+  </div>
+
+  <hr class="sec-divider">
+
+  <h3>Context（上下文）—— 最容易懵的概念</h3>
+  <p>Context 就是「这次对话里，AI 能看到多少内容」。AI 不是记忆力无限的，它每次「思考」只能处理一定量的文字。这个量叫做 <strong>Context Window（上下文窗口）</strong>，超过了 AI 就看不到更早的内容了。</p>
+
+  <div class="ctx-meter">
+    <p style="font-size:13px;font-weight:700;margin-bottom:4px">Context 水位示意图</p>
+    <p style="font-size:12px;color:var(--ink3);margin-bottom:8px">越满，AI 越容易「忘事」或犯迷糊</p>
+    <div style="margin-bottom:10px">
+      <div style="font-size:12px;color:var(--grn);margin-bottom:3px">0-60%：正常，放心用</div>
+      <div class="ctx-bar"><div class="ctx-fill safe" style="width:55%"></div></div>
+    </div>
+    <div style="margin-bottom:10px">
+      <div style="font-size:12px;color:var(--ylw);margin-bottom:3px">60-80%：开始写交接记录</div>
+      <div class="ctx-bar"><div class="ctx-fill warn" style="width:72%"></div></div>
+    </div>
+    <div>
+      <div style="font-size:12px;color:var(--red);margin-bottom:3px">80%+：必须开新对话，否则 AI 会乱</div>
+      <div class="ctx-bar"><div class="ctx-fill crit" style="width:90%"></div></div>
+    </div>
+  </div>
+
+  <h4>怎么查看当前 Context 水位？</h4>
+  <p>在对话框里直接发送这些命令（不是终端命令，是发给 Agent 的）：</p>
+  <div class="cb">
+    <div class="cb-hd"><span class="cb-lang">在对话里发送</span></div>
+    <pre><code>/status          <span class="cm"># 快速查看当前 context 占用</span>
+/context list    <span class="cm"># 详细查看各个文件占用了多少</span></code></pre>
+  </div>
+
+  <h4>Context 快满了怎么办？</h4>
+  <div class="steps">
+    <div class="step">
+      <div class="snum">1</div>
+      <div class="scon">
+        <div class="sti">先让 Agent 做交接总结</div>
+        <div class="sde">发消息：「总结一下目前做到哪了、还差什么、下一步要做什么，写成交接记录保存到 status.md。」</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="snum">2</div>
+      <div class="scon">
+        <div class="sti">用 /compact 压缩历史（可选）</div>
+        <div class="sde">发 <code>/compact</code>，OpenClaw 会把旧的对话历史压缩成摘要，释放 context 空间。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="snum">3</div>
+      <div class="scon">
+        <div class="sti">开新对话继续</div>
+        <div class="sde">开一个新对话，发：「读一下 status.md，告诉我上次做到哪了，然后等我说今天做什么。」</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="sec-divider">
+
+  <h3>Skills（技能包）—— 教会 Agent 特定工作方法</h3>
+  <p>Skills 是一个「操作手册」文件（SKILL.md），告诉 Agent 怎么完成某类特定任务。比如「怎么写前端代码」、「怎么分析数据」、「怎么写报告」。</p>
+  <p>Skills 不是工具（不增加新能力），而是<strong>指导文件</strong>（告诉 Agent 已有能力怎么用）。</p>
+
+  <h4>Skills 在哪里？有哪些可以安装？</h4>
+  <p>官方有一个 Skills 市场叫 <strong>ClawHub</strong>（<code>docs.openclaw.ai/clawhub</code>），你可以在里面找到别人分享的技能包。</p>
+  <div class="cb">
+    <div class="cb-hd"><span class="cb-lang">bash · 查看已安装的 skills</span><button class="cpb" onclick="cp(this,'sk1')">复制</button></div>
+    <pre><code id="sk1"><span class="cm"># 列出当前所有已安装的技能</span>
+openclaw skills list</code></pre>
+  </div>
+
+  <h4>怎么创建一个自己的 Skill？</h4>
+  <p>在工作区的 <code>skills/</code> 目录里新建一个文件夹，然后在里面创建 <code>SKILL.md</code>：</p>
+  <div class="cb">
+    <div class="cb-hd"><span class="cb-lang">bash</span><button class="cpb" onclick="cp(this,'sk2')">复制</button></div>
+    <pre><code id="sk2"><span class="cm"># 创建技能目录</span>
+mkdir -p ~/.openclaw/workspace/skills/我的技能
+
+<span class="cm"># 创建技能文件</span>
+nano ~/.openclaw/workspace/skills/我的技能/SKILL.md</code></pre>
+  </div>
+  <p style="margin-top:8px">SKILL.md 里写你希望 Agent 遵循的操作步骤，比如「每次分析数据时，先做什么、再做什么、最后输出什么格式」。</p>
+</div>
+
+<!-- ===== TAB 6: 第一次对话 ===== -->
+<div class="tab-panel" id="t6">
+  <span class="ey">06 · 第一次对话</span>
+  <h2>怎么开始跟 Agent 说话</h2>
+  <p class="lead">所有硬件和软件都装好了，现在教你怎么真正用起来。</p>
+
+  <h3>第一步：让 Agent 建好团队</h3>
+  <p>第一次用，发这段话给 Agent（在控制台、Telegram 或飞书里都可以）。Agent 会自动根据你的描述建好团队，写好 SOUL 和配置，不需要你手动改文件。</p>
+  <div class="cb">
+    <div class="cb-hd"><span class="cb-lang">复制这段话，发给 Agent</span><button class="cpb" onclick="cp(this,'fc1')">复制</button></div>
+    <pre><code id="fc1">你是我的主控 Agent。我需要你帮我管理以下项目：
+
+【在这里用大白话描述你要做什么，比如：
+  - 我在做电商运营，需要帮我分析竞品数据、出选品报告
+  - 我要写 Python 代码，帮我找 bug、整理文档
+  - 我需要整理笔记和文档，帮我总结和翻译】
+
+请根据我的项目，建好一个合适的工作团队。规则如下：
+- 删文件、改密钥、重启服务，必须先问我确认，等我同意才能动
+- 最终提交、上线、发布的动作，我自己来操作
+- 汇报给我结论和下一步，不要贴大段命令输出
+- 不确定就先停下来问我，不要猜
+
+建好后告诉我每个成员的名字和职责，然后等我派活。</code></pre>
+  </div>
+
+  <div class="note tip">
+    <span class="nt">✓ 发完确认一件事</span>
+    <p>Agent 回复后，看有没有列出团队成员名单。有就建好了。没有就说「你还没建团队，现在建」。</p>
+  </div>
+
+  <hr class="sec-divider">
+
+  <h3>第二步：派第一个任务</h3>
+  <p>告诉 Agent 做什么时，尽量说清楚这 4 件事：</p>
+  <div class="card">
+    <div class="card-b">
+      <div class="fmap">
+        <div class="frow"><div class="fn" style="min-width:80px;color:var(--acc2)">要干嘛</div><div class="fd">这次只做这一件事。一次只说一件，多了 Agent 容易搞混。</div></div>
+        <div class="frow"><div class="fn" style="min-width:80px;color:var(--acc2)">能动哪里</div><div class="fd">允许操作哪个文件夹、哪类数据。明确范围，防止 Agent 乱动。</div></div>
+        <div class="frow"><div class="fn" style="min-width:80px;color:var(--acc2)">不能动哪</div><div class="fd">明确说禁区。没有禁区就写「无」。</div></div>
+        <div class="frow"><div class="fn" style="min-width:80px;color:var(--acc2)">怎么算完</div><div class="fd">做完要给你什么：报告、代码、截图、还是直接告诉你结果？</div></div>
+      </div>
+    </div>
+  </div>
+
+  <h4>实际例子</h4>
+  <div class="pl" style="margin-top:10px">
+    <div class="pr">
+      <div class="sit">分析任务</div>
+      <div class="say">这次只做这一件事：分析我发给你的这份 Excel 表格，找出销售额最高的前 5 个产品。只读这个文件，不改任何东西。做完给我一个清单，每个产品附上具体数字。</div>
+    </div>
+    <div class="pr">
+      <div class="sit">写作任务</div>
+      <div class="say">这次只做这一件事：把我发给你的这段文字翻译成英文，保持原意不要随意改。做完直接给我翻译结果。</div>
+    </div>
+    <div class="pr">
+      <div class="sit">代码任务</div>
+      <div class="say">这次只做这一件事：帮我写一个 Python 脚本，读取 data.csv 文件，统计每一列的平均值。只新建文件，不改现有代码。做完给我可以直接运行的代码。</div>
+    </div>
+  </div>
+
+  <hr class="sec-divider">
+
+  <h3>第三步：配置 status.md（让下次能接上）</h3>
+  <p>每次对话结束前，让 Agent 更新 status.md，下次开新对话就能无缝接上，不用重新解释。</p>
+  <div class="cb">
+    <div class="cb-hd"><span class="cb-lang">每次结束时发这条</span><button class="cpb" onclick="cp(this,'end1')">复制</button></div>
+    <pre><code id="end1">今天到这里。帮我更新 status.md，写清楚：
+1. 今天做了什么
+2. 结果是什么
+3. 明天从哪里继续</code></pre>
+  </div>
+  <div class="cb">
+    <div class="cb-hd"><span class="cb-lang">下次开新对话时发这条</span><button class="cpb" onclick="cp(this,'start1')">复制</button></div>
+    <pre><code id="start1">读一下 status.md，告诉我上次做到哪了，然后等我说今天做什么。</code></pre>
+  </div>
+</div>
+
+<!-- ===== TAB 7: 日常管理 ===== -->
+<div class="tab-panel" id="t7">
+  <span class="ey">07 · 日常管理</span>
+  <h2>每天怎么跟 Agent 一起工作</h2>
+  <p class="lead">建立固定的工作节奏，Agent 就能越用越顺手。</p>
+
+  <h3>每天开始：这样启动</h3>
+  <div class="steps">
+    <div class="step">
+      <div class="snum">1</div>
+      <div class="scon">
+        <div class="sti">确认 Gateway 在运行</div>
+        <div class="sde">在 Ubuntu 终端里输入，看状态是否正常：</div>
+        <div class="cb" style="margin-top:6px">
+          <div class="cb-hd"><span class="cb-lang">bash</span><button class="cpb" onclick="cp(this,'day1')">复制</button></div>
+          <pre><code id="day1">openclaw gateway status</code></pre>
+        </div>
+        <div class="sde" style="margin-top:4px">如果显示 stopped，运行 <code>openclaw gateway restart</code> 重启。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="snum">2</div>
+      <div class="scon">
+        <div class="sti">让 Agent 读取上次记录</div>
+        <div class="sde">在对话里发：「读一下 status.md，告诉我上次做到哪了，然后等我说今天做什么。」</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="snum">3</div>
+      <div class="scon">
+        <div class="sti">今天只追一个最重要的任务</div>
+        <div class="sde">不要同时让 Agent 做太多事，一次专注一件，做完再开下一件。</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="sec-divider">
+
+  <h3>SOP：标准任务流程</h3>
+  <p>每次给 Agent 派活，按这个流程来，出错少、结果好：</p>
+  <div class="card">
+    <div class="card-h"><span class="ic">📋</span><div><div class="ti">标准任务卡模板</div><div class="su">每次派活前填好这 5 项</div></div></div>
+    <div class="card-b">
+      <div class="cb">
+        <div class="cb-hd"><span class="cb-lang">发给 Agent 的任务格式</span><button class="cpb" onclick="cp(this,'sop1')">复制</button></div>
+        <pre><code id="sop1">【项目】：这属于哪个项目
+【目标】：这次只做这一件事：___
+【能动的范围】：只能操作 ___，其他不要动
+【禁区】：不能碰 ___（没有禁区就填「无」）
+【完成标准】：做完给我 ___（报告/代码/清单/直接说结果）
+【风险提示】：涉及 ___ 的操作必须先问我</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <hr class="sec-divider">
+
+  <h3>交接 SOP：Context 快满了怎么做</h3>
+  <p>当你发现 Agent 开始重复说话、或者 <code>/status</code> 显示快满了，按这个流程交接：</p>
+  <div class="steps">
+    <div class="step">
+      <div class="snum">1</div>
+      <div class="scon">
+        <div class="sti">让 Agent 写交接记录</div>
+        <div class="sde">发消息：</div>
+        <div class="cb" style="margin-top:6px">
+          <div class="cb-hd"><span class="cb-lang">发给 Agent</span><button class="cpb" onclick="cp(this,'hj1')">复制</button></div>
+          <pre><code id="hj1">上下文快满了，先停下来。
+写一份交接记录到 status.md，包含：
+1. 原本的目标是什么
+2. 已经完成了什么（有哪些证据/文件）
+3. 现在卡在哪里
+4. 下一步要做什么，谁来做</code></pre>
+        </div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="snum">2</div>
+      <div class="scon">
+        <div class="sti">确认记录写好了</div>
+        <div class="sde">让 Agent 读一遍 status.md 给你确认没有遗漏。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="snum">3</div>
+      <div class="scon">
+        <div class="sti">开新对话继续</div>
+        <div class="sde">在控制台开一个新的对话，发：「读 status.md，告诉我现在在做什么，然后继续。」</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="sec-divider">
+
+  <h3>多 Agent 团队怎么管</h3>
+  <p>当你的任务复杂了，可以让主控 Agent 带着一个团队来做。</p>
+  <div class="note info">
+    <span class="nt">💡 多 Agent 的核心原则</span>
+    <p><strong>你只跟主控说话</strong>：不要同时给多个 Agent 发指令，会乱。</p>
+    <p><strong>主控负责拆任务</strong>：你告诉主控「做 XXX」，由主控决定哪个专员来做。</p>
+    <p><strong>职责不重叠</strong>：每个 Agent 只做一件事，不要让两个 Agent 都去改同一个文件。</p>
+  </div>
+  <div class="cb">
+    <div class="cb-hd"><span class="cb-lang">让主控建团队</span><button class="cpb" onclick="cp(this,'team1')">复制</button></div>
+    <pre><code id="team1">我需要一个团队帮我做 [项目描述]。
+请建立以下角色：
+- 主控（你自己）：负责协调、拆任务、汇总结果
+- 专员1：负责 [具体职责]
+- 专员2：负责 [具体职责]
+- 风控：负责检查所有涉及删除、修改、对外发送的操作
+
+规则：
+- 专员不能自己宣布任务完成，必须经过主控确认
+- 任何「改不回来」的操作，必须先问我
+建好后告诉我团队成员列表。</code></pre>
+  </div>
+
+  <hr class="sec-divider">
+
+  <h3>每天结束：收尾流程</h3>
+  <div class="steps">
+    <div class="step">
+      <div class="snum">1</div>
+      <div class="scon">
+        <div class="sti">更新 status.md</div>
+        <div class="sde">发：「今天到这里，更新 status.md：今天做了什么、结论是什么、明天从哪继续。」</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="snum">2</div>
+      <div class="scon">
+        <div class="sti">重要成果单独存档</div>
+        <div class="sde">发：「把今天的 [报告/代码] 保存到 outputs/日期-任务名.md，我之后查看。」</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="snum">3</div>
+      <div class="scon">
+        <div class="sti">验证 Gateway 还在跑</div>
+        <div class="sde"><code>openclaw gateway status</code>，确认还在运行，才能用手机远程发消息。</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TAB 8: Bug 排查 ===== -->
+<div class="tab-panel" id="t8">
+  <span class="ey">08 · Bug 排查</span>
+  <h2>出问题了，按这个顺序查</h2>
+  <p class="lead">遇到问题不要慌，先按官方推荐的排查顺序走一遍，80% 的问题都能找到原因。</p>
+
+  <h3>万能排查命令（按顺序跑）</h3>
+  <div class="cb">
+    <div class="cb-hd"><span class="cb-lang">bash · 按顺序执行</span><button class="cpb" onclick="cp(this,'debug1')">复制</button></div>
+    <pre><code id="debug1"><span class="cm"># 第1步：查整体状态</span>
+openclaw status
+
+<span class="cm"># 第2步：查 Gateway 是否在跑</span>
+openclaw gateway status
+
+<span class="cm"># 第3步：实时看日志（找报错信息）</span>
+openclaw logs --follow
+
+<span class="cm"># 第4步：让它自己检查配置问题</span>
+openclaw doctor
+
+<span class="cm"># 第5步：查通讯渠道是否正常</span>
+openclaw channels status --probe</code></pre>
+  </div>
+  <p style="margin-top:8px">看完日志后按 <code>Ctrl+C</code> 退出。把看到的报错内容拍照或复制下来，下面逐一对照。</p>
+
+  <hr class="sec-divider">
+
+  <h3>常见问题和解决方法</h3>
+
+  <h4>问题一：Gateway 启动不了</h4>
+  <div class="note warn">
+    <span class="nt">症状</span>
+    <p><code>openclaw gateway status</code> 显示 stopped 或 error</p>
+  </div>
+  <div class="steps">
+    <div class="step">
+      <div class="snum">1</div>
+      <div class="scon">
+        <div class="sti">先看是不是端口被占用</div>
+        <div class="cb">
+          <div class="cb-hd"><span class="cb-lang">bash</span><button class="cpb" onclick="cp(this,'fix1')">复制</button></div>
+          <pre><code id="fix1">openclaw logs --follow</code></pre>
+        </div>
+        <div class="sde" style="margin-top:4px">如果看到 <code>EADDRINUSE</code>，说明端口 18789 被占了。重启虚拟机通常能解决。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="snum">2</div>
+      <div class="scon">
+        <div class="sti">强制重装 Gateway 服务</div>
+        <div class="cb">
+          <div class="cb-hd"><span class="cb-lang">bash</span><button class="cpb" onclick="cp(this,'fix2')">复制</button></div>
+          <pre><code id="fix2">openclaw gateway install --force
+openclaw gateway restart</code></pre>
+        </div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="snum">3</div>
+      <div class="scon">
+        <div class="sti">还不行？检查配置文件</div>
+        <div class="sde">日志里如果看到 <code>gateway.mode</code> 相关错误，运行：</div>
+        <div class="cb" style="margin-top:6px">
+          <div class="cb-hd"><span class="cb-lang">bash</span><button class="cpb" onclick="cp(this,'fix3')">复制</button></div>
+          <pre><code id="fix3">openclaw onboard --mode local</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h4>问题二：发消息没有回复</h4>
+  <div class="note warn">
+    <span class="nt">症状</span>
+    <p>在控制台或 Telegram/飞书发消息，没有任何回复，也没有报错</p>
+  </div>
+  <div class="pl" style="margin-top:10px">
+    <div class="pr">
+      <div class="sit">检查模型</div>
+      <div class="say">运行 <code>openclaw models list</code>，确认有配置模型。没有的话回到「03 配置模型」重新配。</div>
+    </div>
+    <div class="pr">
+      <div class="sit">检查 API Key</div>
+      <div class="say">运行 <code>openclaw doctor</code>，看有没有 API Key 相关的报错。Key 过期或没余额都会导致无回复。</div>
+    </div>
+    <div class="pr">
+      <div class="sit">看实时日志</div>
+      <div class="say">运行 <code>openclaw logs --follow</code>，然后发一条消息，看日志里有没有错误信息。</div>
+    </div>
+    <div class="pr">
+      <div class="sit">通讯渠道问题</div>
+      <div class="say">运行 <code>openclaw channels status --probe</code>，检查 Telegram/飞书通道是否连接正常。</div>
+    </div>
+  </div>
+
+  <h4>问题三：控制台（Dashboard）打不开</h4>
+  <div class="steps">
+    <div class="step">
+      <div class="snum">1</div>
+      <div class="scon">
+        <div class="sti">确认 Gateway 在运行</div>
+        <div class="cb">
+          <div class="cb-hd"><span class="cb-lang">bash</span></div>
+          <pre><code>openclaw gateway status</code></pre>
+        </div>
+        <div class="sde" style="margin-top:4px">没在跑？运行 <code>openclaw gateway restart</code></div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="snum">2</div>
+      <div class="scon">
+        <div class="sti">手动在浏览器里输入地址</div>
+        <div class="sde">不要依赖自动打开，直接在 Ubuntu 的浏览器地址栏里输入：<code>http://127.0.0.1:18789</code></div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="snum">3</div>
+      <div class="scon">
+        <div class="sti">如果要求输入 Token</div>
+        <div class="sde">运行这条命令获取 Token，把输出的链接复制到浏览器：</div>
+        <div class="cb" style="margin-top:6px">
+          <div class="cb-hd"><span class="cb-lang">bash</span><button class="cpb" onclick="cp(this,'fix4')">复制</button></div>
+          <pre><code id="fix4">openclaw dashboard</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h4>问题四：升级后突然出问题</h4>
+  <div class="note warn">
+    <span class="nt">症状</span>
+    <p>更新了 OpenClaw 之后，Gateway 无法启动，日志里有版本不匹配相关错误</p>
+  </div>
+  <div class="cb">
+    <div class="cb-hd"><span class="cb-lang">bash</span><button class="cpb" onclick="cp(this,'fix5')">复制</button></div>
+    <pre><code id="fix5"><span class="cm"># 检查版本是否一致</span>
+openclaw --version
+openclaw gateway status --deep
+
+<span class="cm"># 重装 Gateway 服务</span>
+openclaw gateway install --force
+openclaw gateway restart</code></pre>
+  </div>
+
+  <h4>问题五：Anthropic API 报 429 错误</h4>
+  <div class="note caut">
+    <span class="nt">症状</span>
+    <p>日志里看到 <code>HTTP 429: Extra usage is required for long context requests</code></p>
+  </div>
+  <p>这是因为你的 Claude 账号没有开通长上下文权限，或者当前账号不支持。解决方案：</p>
+  <ul style="padding-left:20px;color:var(--ink2);font-size:14px;line-height:2;margin:8px 0">
+    <li>改用 DeepSeek 模型（国内直连，没有这个限制）</li>
+    <li>换有长上下文权限的 Anthropic API Key</li>
+    <li>缩短对话长度（开新对话继续）</li>
+  </ul>
+
+  <hr class="sec-divider">
+
+  <h3>还是解决不了？</h3>
+  <div class="card">
+    <div class="card-b">
+      <div class="fmap">
+        <div class="frow"><div class="fn" style="min-width:80px;color:var(--acc2)">官方文档</div><div class="fd"><a href="https://docs.openclaw.ai/gateway/troubleshooting" target="_blank" style="color:var(--acc2)">docs.openclaw.ai/gateway/troubleshooting</a> — 完整排查手册</div></div>
+        <div class="frow"><div class="fn" style="min-width:80px;color:var(--acc2)">官方 Discord</div><div class="fd"><a href="https://discord.com/invite/clawd" target="_blank" style="color:var(--acc2)">discord.com/invite/clawd</a> — 有很多人在这里互助</div></div>
+        <div class="frow"><div class="fn" style="min-width:80px;color:var(--acc2)">GitHub Issues</div><div class="fd"><a href="https://github.com/openclaw/openclaw/issues" target="_blank" style="color:var(--acc2)">github.com/openclaw/openclaw/issues</a> — 已知 Bug 和解决方案</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TAB 9: 控制 Agent ===== -->
+<div class="tab-panel" id="t9">
+  <span class="ey">09 · 控制 Agent</span>
+  <h2>怎么让 Agent 听你的话</h2>
+  <p class="lead">掌握这些对话技巧，你就能真正控制 Agent，而不是被它带着跑。</p>
+
+  <h3>纠偏：它跑偏了怎么办</h3>
+  <div class="pl">
+    <div class="pr"><div class="sit">它废话太多</div><div class="say">直接给我结论，不要解释过程。</div></div>
+    <div class="pr"><div class="sit">它做了不该做的</div><div class="say"><span class="stop">停</span>。我没让你做这个，撤回，重新等我指令。</div></div>
+    <div class="pr"><div class="sit">它问太多问题不干活</div><div class="say">先按你现在理解的做，做完了我再纠正。</div></div>
+    <div class="pr"><div class="sit">它没理解我的意思</div><div class="say">不对，我的意思是：<span class="em">【重新说一遍】</span>。这次只做这一件事。</div></div>
+    <div class="pr"><div class="sit">它做到一半卡住了</div><div class="say">现在做到哪了？还差什么？用三句话告诉我。</div></div>
+    <div class="pr"><div class="sit">报告太长看不下去</div><div class="say">重新出一版，只保留最关键的三点，其他删掉。</div></div>
+    <div class="pr"><div class="sit">它开始重复犯迷糊</div><div class="say">Context 快满了，先写交接记录到 status.md，然后我开新对话继续。</div></div>
+    <div class="pr"><div class="sit">你想换个方向</div><div class="say"><span class="stop">停止现在的任务</span>。我们改做：<span class="em">【新任务描述】</span>。</div></div>
+    <div class="pr"><div class="sit">它做完了确认结果</div><div class="say">做完了吗？最终结果是什么？我下一步需要做什么？</div></div>
+    <div class="pr"><div class="sit">它同一问题失败两次</div><div class="say">停下来。告诉我卡在哪、缺什么，我来决定怎么处理，不要第三次重试。</div></div>
+  </div>
+
+  <hr class="sec-divider">
+
+  <h3>危险操作黑名单</h3>
+  <p>这些操作 Agent 不能自己做，必须先告诉你、等你确认。</p>
+  <div class="rb r">
+    <div class="rh">🚫 以下操作必须先问你</div>
+    <ul class="rl">
+      <li><span class="k">重启或停止 Gateway 服务</span> <span class="d">—— openclaw gateway restart/stop</span></li>
+      <li><span class="k">删除任何文件或数据</span> <span class="d">—— rm 命令、清空目录、删数据库记录</span></li>
+      <li><span class="k">修改配置或密钥</span> <span class="d">—— openclaw.json、API Key、token、环境变量</span></li>
+      <li><span class="k">对外发送消息</span> <span class="d">—— 发邮件、推送通知、调用任何对外接口</span></li>
+      <li><span class="k">上线、提交、发布</span> <span class="d">—— 部署代码、推送主分支、提交到外部平台</span></li>
+      <li><span class="k">安装或卸载系统级软件</span> <span class="d">—— sudo apt install、系统设置修改</span></li>
+    </ul>
+  </div>
+
+  <h3>对应的叫停句</h3>
+  <div class="pl">
+    <div class="pr"><div class="sit">它想重启服务</div><div class="say"><span class="stop">停</span>。告诉我重启有什么后果、有没有必要。等我说可以再动。</div></div>
+    <div class="pr"><div class="sit">它想删文件</div><div class="say"><span class="stop">停</span>。把要删的文件列出来，我一个个确认之后再删。</div></div>
+    <div class="pr"><div class="sit">它想改密钥或配置</div><div class="say"><span class="stop">停</span>。告诉我改哪里、改成什么，我自己来动手。</div></div>
+    <div class="pr"><div class="sit">它想替你提交或上线</div><div class="say"><span class="stop">停</span>。提交这一步我自己来，你只需要把最终内容给我。</div></div>
+  </div>
+
+  <div class="note warn">
+    <span class="nt">🔒 万能叫停句，记住这一句</span>
+    <p>任何时候感觉它要干危险的事，发这句话：</p>
+    <p style="font-size:15px;font-weight:700;color:var(--ink);margin-top:8px">「停。先告诉我你要做什么、有什么后果，等我说可以再动。」</p>
+  </div>
+
+  <hr class="sec-divider">
+
+  <h3>常用的对话内斜杠命令</h3>
+  <p>这些命令直接在对话框里发送（不是终端命令），用于控制 Agent 的状态：</p>
+  <table class="tbl">
+    <tr><th>命令</th><th>作用</th></tr>
+    <tr><td><code>/status</code></td><td>查看当前 context 占用情况</td></tr>
+    <tr><td><code>/context list</code></td><td>详细查看哪些文件占了多少空间</td></tr>
+    <tr><td><code>/compact</code></td><td>压缩历史对话，释放 context 空间</td></tr>
+    <tr><td><code>/model deepseek/deepseek-v4-pro</code></td><td>临时切换到更强的模型</td></tr>
+    <tr><td><code>/think</code></td><td>开启深度思考模式（更慢但更准）</td></tr>
+    <tr><td><code>/new</code></td><td>开启新会话（清空历史）</td></tr>
+  </table>
+
+  <div class="ft">
+    <div class="fi">🦞</div>
+    <p>Agent 负责<span class="em">分析、写代码、出方案</span>。<br>删、改、提交、上线——<span class="em">永远你自己来</span>。</p>
+    <span class="mono">遇到问题 → 看「08 Bug 排查」· 官方文档 → docs.openclaw.ai</span>
+  </div>
+</div>
+
+</main>
+
+<script>
+// Tab switching
+const tabs = document.querySelectorAll('.tab-btn');
+const panels = document.querySelectorAll('.tab-panel');
+tabs.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const id = btn.dataset.tab;
+    tabs.forEach(t => t.classList.remove('active'));
+    panels.forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(id).classList.add('active');
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  });
+});
+
+// Copy buttons
+function cp(btn, id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  navigator.clipboard.writeText(el.innerText).then(() => {
+    btn.textContent = '已复制 ✓';
+    btn.classList.add('ok');
+    setTimeout(() => { btn.textContent = '复制'; btn.classList.remove('ok'); }, 2200);
+  });
+}
+</script>
+</body>
+</html>
