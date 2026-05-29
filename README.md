@@ -4,7 +4,7 @@
 
 ## 在线访问
 
-GitHub Pages 地址会在仓库发布后启用。
+https://thewhitewall520-max.github.io/openclaw-beginner-guide/
 
 ## 内容
 
