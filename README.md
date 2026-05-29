@@ -1,10 +1,10 @@
-# OpenClaw 新手完全教程
+# OpenClaw 中文新手教程
 
 这是一个面向零基础用户的 OpenClaw 入门教程，覆盖从虚拟机准备、安装 OpenClaw、配置模型与通讯渠道，到日常管理、排错和 Agent 控制的完整流程。
 
 ## 在线访问
 
-https://thewhitewall520-max.github.io/openclaw-beginner-guide/
+https://thewhitewall520-max.github.io/openclaw-zh-hans-starter-guide/
 
 ## 内容
 
